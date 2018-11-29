@@ -1,0 +1,31 @@
+{
+  "name": "fsm-ts",
+  "version": "0.1.0",
+  "description": "Finite State Machine for TypeScript",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "ts-node ./test/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eakarpov/fsm-ts.git"
+  },
+  "keywords": [
+    "fsm",
+    "finite",
+    "state",
+    "machine",
+    "typescript"
+  ],
+  "author": "eakarpov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eakarpov/fsm-ts/issues"
+  },
+  "homepage": "https://github.com/eakarpov/fsm-ts#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.1"
+  }
+}
