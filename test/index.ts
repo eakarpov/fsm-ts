@@ -1,22 +1,39 @@
 import FSM from "../src/FSM";
 import State from "../src/State";
 import Event from "../src/Event";
+import {on, wait} from "../src";
 
-const A = new State();
-const B = new State();
-const C = new State();
+const A = new State('a');
+const B = new State('b');
+const C = new State('c');
 
 const eventA = new class extends Event {
     public async dispatch(): Promise<State> {
-        console.log(4);
+        console.log('event A');
         return super.dispatch();
     }
-}(A, C);
+};
 
-new FSM()
-    .addState(A)
-    .addState(B)
-    .addState(C)
-    .addEvent(eventA)
+const eventB = new Event();
+const eventC = new Event();
+
+const fsm = FSM()
     .initial(A)
-    .emit(eventA);
+    .withLogging((from: State, to: State, event: Event, data: any) =>
+        `${from.name} -> ${to.name} in ${event.id} with new payload ${data}`)
+    .from(A.with(10),
+        on(eventA)
+            // .pre(wait(5))
+            .to(B)
+            .data((dataA: any, dataEventA: any) => dataA + dataEventA)
+            // .post(wait(1))
+    )
+    .from(B.with(20),
+        on(eventB).to(C),
+        on(eventC).to(A).pre(wait(100)).data((dataB: any, dataEventC: any) => dataB + dataEventC)
+    );
+
+void async function() {
+    const res = await fsm.emit(eventA, 20).emit(eventC, 30).get();
+    console.log(res);
+}();
