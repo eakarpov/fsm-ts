@@ -1,7 +1,7 @@
 import State from "./State";
 import Event from "./Event";
 
-export class OnClass<T = any, K = any> {
+export class OnClass<T = any, K = any, R = any> {
     constructor(public event: Event<T>) {}
 
     public pre(f: any) {
@@ -19,7 +19,7 @@ export class OnClass<T = any, K = any> {
         return this;
     }
 
-    public data(f: (eventData: T, stateData: K) => any) {
+    public data(f: (eventData: T, stateData: R) => K) {
         this.event.update = f;
         return this;
     }
@@ -30,6 +30,6 @@ export class OnClass<T = any, K = any> {
     }
 }
 
-export function on<T = any, K = any>(event: Event<T>) {
-    return new OnClass<T, K>(event);
+export function on<T = any, K = any, R = any>(event: Event<T>) {
+    return new OnClass<T, K, R>(event);
 }
