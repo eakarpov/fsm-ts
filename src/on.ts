@@ -19,8 +19,13 @@ export class OnClass {
         return this;
     }
 
-    public data(f: any) {
+    public data(f: (eventData: any, stateData: any) => any) {
         this.event.update = f;
+        return this;
+    }
+
+    public annotate(props: any) {
+        this.event.props = props;
         return this;
     }
 }

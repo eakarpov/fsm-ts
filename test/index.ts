@@ -23,14 +23,15 @@ const fsm = FSM()
         `${from.name} -> ${to.name} in ${event.id} with new payload ${data}`)
     .from(A.with(10),
         on(eventA)
-            // .pre(wait(5))
             .to(B)
-            .data((dataA: any, dataEventA: any) => dataA + dataEventA)
-            // .post(wait(1))
-    )
+            .data((dataA: number, dataEventA: number) => dataA + dataEventA)
+            .annotate({ monotonous: true }))
     .from(B.with(20),
         on(eventB).to(C),
-        on(eventC).to(A).pre(wait(100)).data((dataB: any, dataEventC: any) => dataB + dataEventC)
+        on(eventC).to(A)
+            .pre(wait(1))
+            .data((dataB: number, dataEventC: number) => dataB + dataEventC)
+            .annotate({ monotonous: true })
     );
 
 void async function() {

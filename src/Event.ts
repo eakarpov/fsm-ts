@@ -6,6 +6,7 @@ export default class Event {
     public payload: any;
     public from: State;
     public to: State;
+    public props?: any;
     constructor() {
         this.id = uuid();
     }
