@@ -3,38 +3,45 @@ import State from "../src/State";
 import Event from "../src/Event";
 import {on, wait} from "../src";
 
-const A = new State('a');
-const B = new State('b');
-const C = new State('c');
+const A = new State<number>('a');
+const B = new State<number>('b');
+const C = new State<number>('c');
 
-const eventA = new class extends Event {
+const eventA = new class extends Event<number> {
     public async dispatch(): Promise<State> {
         console.log('event A');
         return super.dispatch();
     }
 };
 
-const eventB = new Event();
-const eventC = new Event();
+const eventB = new Event<number>();
+const eventC = new Event<number>();
 
 const fsm = FSM()
     .initial(A)
     .withLogging((from: State, to: State, event: Event, data: any) =>
         `${from.name} -> ${to.name} in ${event.id} with new payload ${data}`)
     .from(A.with(10),
-        on(eventA)
+        on<number, number>(eventA)
             .to(B)
-            .data((dataA: number, dataEventA: number) => dataA + dataEventA)
-            .annotate({ monotonous: true }))
+            .data((dataA: number, dataEventA: number) => dataA + dataEventA))
+            // .annotate({ monotonous: true })))
     .from(B.with(20),
         on(eventB).to(C),
-        on(eventC).to(A)
+        on<number, number>(eventC).to(A)
             .pre(wait(1))
             .data((dataB: number, dataEventC: number) => dataB + dataEventC)
-            .annotate({ monotonous: true })
+            // .annotate({ monotonous: true })
     );
+
+
 
 void async function() {
     const res = await fsm.emit(eventA, 20).emit(eventC, 30).get();
     console.log(res);
+
+    fsm.emit(eventA, -20);
+    fsm.emit(eventC, -30);
+    const result = await fsm.get();
+    console.log(result);
 }();

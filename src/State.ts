@@ -1,14 +1,14 @@
 import {uuid} from "./util/uuid";
 
-export default class State {
+export default class State<T = any> {
     public readonly id: string;
-    public payload: any;
+    public payload: T;
 
     public constructor(public name?: string) {
         this.id = uuid();
     }
 
-    public with<T extends any>(payload: T) {
+    public with(payload: T) {
         this.payload = payload;
         return this;
     }

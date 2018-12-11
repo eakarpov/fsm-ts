@@ -1,9 +1,9 @@
 import State from "./State";
 import {uuid} from "./util/uuid";
 
-export default class Event {
+export default class Event<T = any> {
     public readonly id: string;
-    public payload: any;
+    public payload: T;
     public from: State;
     public to: State;
     public props?: any;
@@ -32,7 +32,7 @@ export default class Event {
 
     public postEmit() {}
 
-    public with(data: any) {
+    public with(data: T) {
         this.payload = data;
         return this;
     }

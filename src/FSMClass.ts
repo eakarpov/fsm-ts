@@ -14,6 +14,12 @@ export default class FSMClass {
 
     constructor() {}
 
+    public clone() {
+        const copy = new (this.constructor as { new (): FSMClass })();
+        Object.assign(copy, this);
+        return copy;
+    }
+
     private addState(state: State) {
         this.states.push(state);
         return this;
