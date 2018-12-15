@@ -19,13 +19,18 @@ export class OnClass<T = any, K = any, R = any> {
         return this;
     }
 
-    public data(f: (eventData: T, stateData: R) => K) {
+    public data(f: (eventData: T, stateData: R, resources: {[key: string]: number}) => K) {
         this.event.update = f;
         return this;
     }
 
     public annotate(props: any) {
         this.event.props = props;
+        return this;
+    }
+
+    public cost(payload: { [key: string]: number }) {
+        this.event.cost = payload;
         return this;
     }
 }

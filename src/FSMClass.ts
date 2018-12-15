@@ -11,6 +11,7 @@ export default class FSMClass {
     private started: boolean = false;
     private log: boolean = false;
     private logF?: any;
+    private resources?: { [key: string]: number };
 
     constructor() {}
 
@@ -38,10 +39,10 @@ export default class FSMClass {
         const { obj, data } = this.exec.pop();
         if (obj.from === this.current) {
             obj.payload = data;
-            obj.emit().then((res: any) => {
+            obj.emit(this.resources).then((res: any) => {
                 if (this.log) {
                     if (this.logF) {
-                        console.log(this.logF(obj.from, res.res, obj, data));
+                        console.log(this.logF(obj.from, res.res, obj, data, this.resources));
                     } else {
                         console.log(`Transition from ${obj.from.id} to ${res.res.id}`);
                     }
@@ -73,6 +74,11 @@ export default class FSMClass {
 
     public initial(state: State) {
         this.current = state;
+        return this;
+    }
+
+    public with(resources: { [key: string]: number }) {
+        this.resources = resources;
         return this;
     }
 
@@ -108,5 +114,30 @@ export default class FSMClass {
         this.log = true;
         this.logF = f;
         return this;
+    }
+
+    public async check(events: Event[]): Promise<boolean> {
+        const testResources = {...this.resources};
+        let flag = true;
+        for (const event of events) {
+            if (!flag) break;
+            if (event.cost) {
+                Object.keys(event.cost).forEach(cost => {
+                    if (testResources.hasOwnProperty(cost)) {
+                        testResources[cost] -= event.cost[cost];
+                    }
+                });
+            }
+            if (event.update) {
+                event.update(event.payload, event.from.payload, testResources);
+            }
+            for (const resource in testResources) {
+                if (testResources[resource] < 0) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        return flag;
     }
 }
