@@ -10,8 +10,14 @@ export default class FSMClass {
     private exec: any = [];
     private started: boolean = false;
     private log: boolean = false;
-    private logF?: any;
     private resources?: { [key: string]: number };
+    private logF?: (
+        stateFrom?: State,
+        stateTo?: State,
+        event?: Event,
+        data?: any,
+        resources?: {[key: string]: number}
+    ) => string;
 
     constructor() {}
 
