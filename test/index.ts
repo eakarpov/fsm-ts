@@ -26,7 +26,7 @@ const fsm = FSM()
         on<number, number, number>(eventA)
             .to(B)
             .data((dataA: number, dataEventA: number, resources: { rub: number, time: number }) => {
-                resources.time -= 100;
+                resources.time += 100;
                 return dataA + dataEventA;
             })
             .post(async () => { await wait(2)(); console.log('post callback!'); }))
@@ -35,20 +35,19 @@ const fsm = FSM()
         on(eventB).to(C),
         on<number, number, number>(eventC).to(A)
             .pre(wait(1))
-            .cost({ time: 10, rub: 300 })
+            .cost({ time: 200, rub: 300 })
             .data((dataB: number, dataEventC: number) => dataB + dataEventC)
             // .annotate({ monotonous: true })
     );
 
 
 void async function() {
-    const valid = await fsm.check([ eventA, eventC, eventA, eventC ]);
+    const valid = await fsm.check([
+        eventA.with(30),
+        eventC.with(20),
+    ]);
     if (valid) {
-        const res = await fsm.emit(eventA, 20).emit(eventC, 30).get();
-        console.log(res);
-
         fsm.emit(eventA, 30);
-        // await wait(2);
         fsm.emit(eventC, 20);
         const result = await fsm.get();
         console.log(result);
