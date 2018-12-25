@@ -3,12 +3,14 @@ import {uuid} from "./util/uuid";
 
 export default class Event<T = any> {
     public readonly id: string;
+    public name?: string;
     public payload: T;
     public from: State;
     public to: State;
     public props?: any;
     public cost?: { [key: string]: number };
-    constructor() {
+    constructor(name?: string) {
+        this.name = name;
         this.id = uuid();
     }
 

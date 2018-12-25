@@ -40,7 +40,6 @@ const fsm = FSM()
             // .annotate({ monotonous: true })
     );
 
-
 void async function() {
     const valid = await fsm.check([
         eventA.with(30),
