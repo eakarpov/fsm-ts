@@ -19,7 +19,7 @@ export class OnClass<T = any, K = any, R = any> {
         return this;
     }
 
-    public data(f: (eventData: T, stateData: R, resources: {[key: string]: number}) => K) {
+    public data(f: (eventData?: T, stateData?: R, resources?: {[key: string]: number}) => K, stateToData?: K) {
         this.event.update = f;
         return this;
     }

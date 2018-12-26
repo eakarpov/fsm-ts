@@ -30,7 +30,7 @@ export default class Event<T = any> {
             });
         }
         if (this.update) {
-            res.payload = this.update(this.payload, this.from.payload, resources);
+            res.payload = this.update(this.payload, this.from.payload, resources, this.to.payload);
         }
         return { res, callback: this.postEmit };
     }
@@ -43,7 +43,7 @@ export default class Event<T = any> {
         return Promise.resolve();
     }
 
-    public update: (a: T, b: any, resources: { [key: string]: number }) => any = null;
+    public update: (a?: T, b?: any, resources?: { [key: string]: number }, c?: any) => any = null;
 
     public postEmit() {}
 
